@@ -27,8 +27,12 @@ def create_app():
 
     with app.app_context():
         from application.blueprints.questions.questions import questions_bp
+        from application.blueprints.scoreboard.scoreboard import scoreboard_bp
+
 
         app.register_blueprint(questions_bp)
+        app.register_blueprint(scoreboard_bp)
+
 
         db.create_all()
         return app
