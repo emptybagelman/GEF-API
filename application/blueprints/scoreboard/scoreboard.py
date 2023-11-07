@@ -6,7 +6,7 @@ from application.blueprints.scoreboard.model import Scoreboard
 
 scoreboard_bp = Blueprint("scoreboard",__name__)
 
-@scoreboard_bp.route("/scoreboard",methods=["GET"])
+@scoreboard_bp.route("/scoreboard",methods=["GET","POST"])
 def get_all():
     try:
         scoreboard = Scoreboard.query.all()
@@ -16,6 +16,23 @@ def get_all():
     
     if request.method == "GET":
         return jsonify({"data":data}), 200
+    if request.method == "POST":
+        try:
+
+            data = request.get_json()
+
+            username = data.get("username")
+            score = data.get("score")
+
+            new_score = Scoreboard(username=username,score=score)
+
+            db.session.add(new_score)
+            db.session.commit()
+
+            return jsonify({"data": new_score.json}), 201
+        
+        except Exception as e:
+            return f"An error occurred: {str(e)}", 400
     
 @scoreboard_bp.route("/scoreboard/top/<int:amount>",methods=["GET"])
 def get_top_x(amount):
